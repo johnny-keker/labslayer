@@ -47,22 +47,18 @@ async function main() {
 
   renderScene();
   document.addEventListener('keypress', (e) => {
-    console.log(e.charCode);
-    switch (e.charCode) {
-      case 1094:
-      case 119:
+    console.log(e.key);
+    switch (e.key) {
+      case "w":
         currZ += 1;
         break;
-      case 1099:
-      case 115:
+      case "a":
         currZ -= 1;
         break;
-      case 1092:
-      case 97:
+      case "s":
         currX += 1;
         break;
-      case 1074:
-      case 100:
+      case "d":
         currX -= 1;
         break;
       default:
