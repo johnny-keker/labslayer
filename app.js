@@ -52,10 +52,10 @@ async function main() {
       case "w":
         currZ += 1;
         break;
-      case "a":
+      case "s":
         currZ -= 1;
         break;
-      case "s":
+      case "a":
         currX += 1;
         break;
       case "d":
@@ -187,7 +187,7 @@ async function initBuffers(gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, texcoors, gl.STATIC_DRAW);
   
-  const textureBlob = await fetch('../textures/00.jpg').then((r) => r.blob());
+  const textureBlob = await fetch('./textures/00.jpg').then((r) => r.blob());
   const textureBitmap = await window.createImageBitmap(textureBlob);
   var texture = gl.createTexture();
 
