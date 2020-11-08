@@ -84,12 +84,25 @@ function render(time) {
   // okay this boy handles the size of the lava lake. would be nice to divide its dims
   // by sceen size to make it actually square
   // actualy we can rotate and translate it too
-  var modelMatrix = new Float32Array([lavaWidth, 0, 0, 0, 0, 1, 0, 0, 0, 0, lavaLength, 0, 0, 0, 0, 1]);
+  var modelMatrix = new Float32Array(
+    [lavaWidth, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, lavaLength, 0,
+      0, 0, 0, 1]);
 
+  // this thing controls cameras coordinate system. need to investigate more.
+  var viewMatrix = new Float32Array(
+    [1, 0, 0, 0,
+     0, 1, 0, 0,
+     0, 0, 1, 0,
+     0, 0, 0, 1]);
 
-  var projectionMatrix = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-  
-  var viewMatrix = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+  // dis boy is quite complicated
+  var projectionMatrix = new Float32Array(
+    [1, 0, 0, 0,
+     0, 1, 0, 0,
+     0, 0, 1, 0,
+     0, 0, 0, 1]);
 
   projectionMatrix = matrix.perspective(projectionMatrix,
     45,
