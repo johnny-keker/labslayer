@@ -1,0 +1,49 @@
+{
+  "name": "labslayer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --progress --color --config webpack.prod.js",
+    "dev": "webpack-dev-server --open --public --config webpack.dev.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnny-keker/labslayer.git"
+  },
+  "author": "johnny-keker",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnny-keker/labslayer/issues"
+  },
+  "homepage": "https://github.com/johnny-keker/labslayer#readme",
+  "devDependencies": {
+    "-": "0.0.1",
+    "@tweenjs/tween.js": "^18.6.4",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.0.3",
+    "css-loader": "^4.2.1",
+    "exports-loader": "^1.1.0",
+    "file-loader": "^6.0.0",
+    "gh-pages": "^3.1.0",
+    "html-webpack-plugin": "^4.3.0",
+    "imports-loader": "^1.1.0",
+    "save-dev": "0.0.1-security",
+    "shader-particle-engine": "github:blaze33/ShaderParticleEngine#d019c8bf3766997f39dccda943fcee9586e84d94",
+    "stats.js": "^0.17.0",
+    "style-loader": "^1.2.1",
+    "twgl.js": "^4.16.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.1.1"
+  },
+  "dependencies": {
+    "-": "0.0.1",
+    "gh-pages": "^3.1.0",
+    "save-dev": "0.0.1-security"
+  }
+}

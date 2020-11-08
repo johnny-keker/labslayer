@@ -1,4 +1,4 @@
-import * as matrix from './utils/matrices.js';
+import * as matrix from './src/js/matrices.js';
 import Mouse from './utils/mouse.js';
 
 let gl;

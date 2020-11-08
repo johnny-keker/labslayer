@@ -45,13 +45,14 @@ async function main() {
   new Mouse(canvas, (radX, radY) => {
     let x = matrix.radToDeg(radX);
     let y = matrix.radToDeg(radY);
-    if (x < -180) x = 180;
-    else if (x > 180) x = -180;
+    if (x < -70) x = -70;
+    else if (x > 70) x = 70;
     if (y < -180) y = 180;
     else if (y > 180) y = -180;
     //document.querySelector('.slider__x').value = x;    
     //document.querySelector('.slider__y').value = y;
     rotations[1] = y;
+    rotations[0] = x;
     //redrawScene();
   });
 
