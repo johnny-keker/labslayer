@@ -29,7 +29,7 @@ export function generateTexcoor(x, y) {
 
 export function generatePlane(x, y) {
   var positions = new Float32Array(x * y * 18);
-  var texcoors = new Float32Array(x * y * 12);
+  var texcoors = new Float32Array(x * y *12);
   var filledPos = 0;
   var filledCoors = 0;
   for (var i = -x / 2; i < x / 2; i++) {

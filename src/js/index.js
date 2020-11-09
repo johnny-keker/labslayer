@@ -4,7 +4,8 @@ import "../css/style.css"
 import * as compiler from "./shaders-compiler"
 import * as geometry from "./geometry-helper"
 import * as matrix from "./matrices"
-import Mouse from './mouse.js';
+import Mouse from './mouse.js'
+import lavaTexture from "../textures/00.jpg"
 
 let gl;
 let programs;
@@ -15,6 +16,7 @@ let plane;
 let rotations = [0, 0, 0];
 let playerX = 0;
 let playerY = 0;
+let texture;
 
 var pressedKeys = {};
 window.onkeyup = function(e) { pressedKeys[e.keyCode] = false; }
@@ -44,9 +46,12 @@ async function main() {
 
   plane = geometry.generatePlane(1000, 1000);
   arrays = {
-    aVertexPosition: plane.positions
+    aVertexPosition: plane.positions,
+    aTexcoord: plane.texcoors
   };
   bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+
+  texture = twgl.createTextures(gl, {lava: {src: lavaTexture}});
 
   new Mouse(canvas, (radX, radY) => {
     let x = matrix.radToDeg(radX);
@@ -127,8 +132,9 @@ function render(time) {
     uPhase: phase,
     uModelMatrix: modelMatrix,
     uViewMatrix: viewMatrix,
-    uProjectionMatrix: projectionMatrix
-    //vTexcoord: plane.texcoors
+    uProjectionMatrix: projectionMatrix,
+    //aTexcoord: plane.texcoors, //new Float32Array([-1, -1,  -1, 1,  1, 1,   1, 1,   1, -1,  -1, -1]),//
+    uTexture: texture.lava
   }
 
   gl.useProgram(programs.lava.program);
