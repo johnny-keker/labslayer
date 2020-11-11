@@ -41,19 +41,6 @@ async function main() {
      0, 0, 1, 0,
      0, 0, 0, 1]);
 
-  // dis boy is quite complicated
-  projectionMatrix = new Float32Array(
-    [1, 0, 0, 0,
-     0, 1, 0, 0,
-     0, 0, 1, 0,
-     0, 0, 0, 1]);
-
-  projectionMatrix = matrix.perspective(projectionMatrix,
-    45,
-    gl.canvas.clientWidth / gl.canvas.clientHeight,
-    0.1,
-    1000);
-
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.clearDepth(1.0);
   gl.enable(gl.DEPTH_TEST);
@@ -88,6 +75,18 @@ function render(time) {
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
   /* ---------------- */
 
+  // dis boy is quite complicated
+  projectionMatrix = new Float32Array(
+    [1, 0, 0, 0,
+     0, 1, 0, 0,
+     0, 0, 1, 0,
+     0, 0, 0, 1]);
+
+  projectionMatrix = matrix.perspective(projectionMatrix,
+    45,
+    gl.canvas.clientWidth / gl.canvas.clientHeight,
+    0.1,
+    1000);
   projectionMatrix = matrix.rotate(projectionMatrix, rotations);
 
   lava.draw(phase, viewMatrix, projectionMatrix);
