@@ -1,97 +1,95 @@
-const twgl = require('twgl.js')
+import "./../css/style.css";
 
-import "../css/style.css"
-import * as matrix from "./matrices"
-import Mouse from './mouse.js'
-import Lava from './classes/lava'
+import {
+  Scene,
+  Vector3
+} from "three";
 
+import Camera from './classes/camera';
+import Renderer from './classes/renderer';
+import * as Lava from './classes/lava';
+import * as TWEEN from "@tweenjs/tween.js";
+import * as Light from "./classes/light";
 
-let gl;
-let phase = 0;
-let rotations = [0, 0, 0];
-let playerX = 0;
-let playerY = 0;
-let lava;
-let viewMatrix;
-let projectionMatrix;
+import {WEBGL} from "three/examples/jsm/WebGL.js";
 
-var pressedKeys = {};
-window.onkeyup = function(e) { pressedKeys[e.keyCode] = false; }
-window.onkeydown = function(e) { pressedKeys[e.keyCode] = true; }
+if (WEBGL.isWebGLAvailable()) {
+  init();
+} else {
+  let warning = WEBGL.getWebGLErrorMessage();
+  document.body.appendChild(warning);
+}
 
-async function main() {
+let x = 0;
+let y = 0;
+let mouseLocked = false;
+let rotations = [0,0,0];
+
+function degToRad(d) {
+  return d * Math.PI / 180;
+}
+
+function init() {
+  let container = document.body;
+  let scene = new Scene();
+
   const canvas = document.createElement("CANVAS");
   document.body.appendChild(canvas);
-  gl = canvas.getContext("webgl");
 
-  canvas.width = document.body.clientWidth;
-  canvas.height = document.body.clientHeight;
+  let renderer = new Renderer(container, canvas);
 
-  if (gl == null) {
-    alert("Sorry, buddy - your browser or machine dont support WEB-GL(");
-    return;
+  canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
+  document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+
+  canvas.onclick = function() {
+    canvas.requestPointerLock();
+    mouseLocked = true;
   }
 
-  lava = new Lava(twgl, gl);
+  let camera = new Camera(renderer.threeRenderer);
 
-  // this thing controls cameras coordinate system. need to investigate more.
-  viewMatrix = new Float32Array(
-    [1, 0, 0, 0,
-     0, 1, 0, 0,
-     0, 0, 1, 0,
-     0, 0, 0, 1]);
+  console.log(camera.threeCamera.rotation);
 
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-  gl.clearDepth(1.0);
-  gl.enable(gl.DEPTH_TEST);
-  gl.depthFunc(gl.LEQUAL);
+  window.onkeydown = function(e) { if (e.keyCode == 27) mouseLocked = false; }
+  document.onmousemove = updatePosition;
 
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  function updatePosition(e) {
+    if (!mouseLocked) return;
+    x += e.movementX;//matrix.radToDeg(radX);
+    y += e.movementY;//matrix.radToDeg(radY);
+    if (x < -180) x = 180;
+    else if (x > 180) x = -180;
+    if (y < -70) y = -70;
+    else if (y > 70) y = 70;
+    camera.threeCamera.rotation.setFromVector3(new Vector3(0, -degToRad(x), 0));
+    //console.log(camera.threeCamera.position);
+    //camera.threeCamera.rotation.y += degToRad(e.movementX);
+  }
 
-  new Mouse(canvas, (radX, radY) => {
-    let x = matrix.radToDeg(radX);
-    let y = matrix.radToDeg(radY);
-    if (x < -70) x = -70;
-    else if (x > 70) x = 70;
-    if (y < -180) y = 180;
-    else if (y > 180) y = -180;
-    rotations[1] = y;
-    rotations[0] = x;
-  });
+  const uniforms = {
+    uPhase: { value: 0.0 }
+  }
 
-  requestAnimationFrame(render);
+  const lava = Lava.default(uniforms);
+  scene.add(lava);
+
+  Light.default(scene);
+
+  function update(delta) {
+      TWEEN.update();
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    //delta = clock.getDelta();
+    //update(delta);
+    uniforms.uPhase.value += 0.1;
+    renderer.render(scene, camera.threeCamera);
+    //lava.rotation.z += 1;
+    //camera.threeCamera.rotation.y += 0.01;
+    //camera.threeCamera.rotation.x += 0.01;
+    //console.log(camera.threeCamera.rotation.x);
+  }
+
+  animate();
 }
-
-function render(time) {
-  phase += 0.05;
-  twgl.resizeCanvasToDisplaySize(gl.canvas);
-
-  /* ---------------- */
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-  gl.clearDepth(1.0);
-  gl.enable(gl.DEPTH_TEST);
-  gl.depthFunc(gl.LEQUAL);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-  /* ---------------- */
-
-  // dis boy is quite complicated
-  projectionMatrix = new Float32Array(
-    [1, 0, 0, 0,
-     0, 1, 0, 0,
-     0, 0, 1, 0,
-     0, 0, 0, 1]);
-
-  projectionMatrix = matrix.perspective(projectionMatrix,
-    45,
-    gl.canvas.clientWidth / gl.canvas.clientHeight,
-    0.1,
-    1000);
-  projectionMatrix = matrix.rotate(projectionMatrix, rotations);
-
-  lava.draw(phase, viewMatrix, projectionMatrix);
-
-  requestAnimationFrame(render);
-}
-
-document.addEventListener('DOMContentLoaded', main);

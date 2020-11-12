@@ -73,6 +73,15 @@ module.exports = {
                     }
                 ]
             },
+            {
+                test: /\.obj$/,
+                use: [
+                    {
+                        loader: 'webpack-obj-loader',
+                        options: {outputPath: 'models'}
+                    }
+                ]
+            }
         ]
     }
 };

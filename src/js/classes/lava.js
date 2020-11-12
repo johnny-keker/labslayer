@@ -1,69 +1,41 @@
-import texture from "../../textures/00.jpg"
-import vShader from "../../shaders/lava_V.glsl"
-import fShader from "../../shaders/lava_F.glsl"
-import * as geometry from "../geometry-helper"
-import * as matrix from "../matrices"
+import {Mesh, RepeatWrapping, ShaderMaterial, PlaneGeometry, TextureLoader, BufferGeometry, BufferAttribute, ImageUtils } from "three";
+import lavaTextureFile from '../../textures/lava.jpg';
 
-export default class Lava {
-  constructor(twgl, gl) {
-    this.twgl = twgl;
-    this.gl = gl;
-    this.progInfo = null;
-    this.bufferInfo = this.initBuffers();
-    this.texture = this.initTexture();
+const vShader = `
+uniform float uPhase;
 
-    // okay this boy handles the size of the lava lake. would be nice to divide its dims
-    // by sceen size to make it actually square
-    // actualy we can rotate and translate it too
-    this.modelMatrix = new Float32Array(
-                  [1, 0, 0, 0,
-                   0, 1, 0, 0,
-                   0, 0, 1, 0,
-                   0, 0, 0, 1]);
-    // we need to rotate lava lake to make it horizontal and
-    // we need to move it down a bit
-    this.modelMatrix = matrix.rotate(this.modelMatrix, [-90, 0, 0]);
-    this.modelMatrix = matrix.translate(this.modelMatrix, 0, -20, 0);
-  }
+varying vec2 vTexcoord;
 
-  async draw(phase, viewMatrix, projectionMatrix) {
-    if (this.progInfo === null) {
-      this.progInfo = await this.initProgam();
-    }
+void main() {
+  vec4 pos = vec4(position, 1.0);
+  pos.z = 1.0 * sin(0.4 * pos.x + uPhase) * sin(0.4 * pos.y + uPhase);
+  vTexcoord = vec2(round(pos.x) / 20.0, round(pos.y) / 20.0);
+  gl_Position = projectionMatrix * modelViewMatrix * pos;
+}`
 
-    const uniforms = {
-      uPhase: phase,
-      uModelMatrix: this.modelMatrix,
-      uViewMatrix: viewMatrix,
-      uProjectionMatrix: projectionMatrix,
-      uTexture: this.texture
-    }
+const fShader = `
+varying vec2 vTexcoord;
 
-    this.gl.useProgram(this.progInfo.program);
-    this.twgl.setBuffersAndAttributes(this.gl, this.progInfo, this.bufferInfo);
-    this.twgl.setUniforms(this.progInfo, uniforms);
-    this.twgl.drawBufferInfo(this.gl, this.bufferInfo);
-  }
+uniform sampler2D uTexture;
 
-  async initProgam() {
-    const vertexText = await (await fetch(vShader)).text();
-    const fragmentText = await (await fetch(fShader)).text();
+void main() {
+  gl_FragColor = texture2D(uTexture, vTexcoord);
+  //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}`
 
-    const program = this.twgl.createProgramFromSources(this.gl, [vertexText, fragmentText]);
-    const progInfo = this.twgl.createProgramInfoFromProgram(this.gl, program);
-    return progInfo;
-  }
+export default function lava(uniforms) {
+  const textureLoader = new TextureLoader();
 
-  initBuffers() {
-    let plane = geometry.generatePlane(1000, 1000);
-    const arrays = {
-      aVertexPosition: plane.positions,
-      aTexcoord: plane.texcoors
-    };
-    return this.twgl.createBufferInfoFromArrays(this.gl, arrays);
-  }
+  let lavaTexture = textureLoader.load(lavaTextureFile);
+  lavaTexture.wrapS = RepeatWrapping;
+  lavaTexture.wrapT = RepeatWrapping;
+  lavaTexture.repeat.set(100, 100);
+  uniforms.uTexture = { type: "t", value: lavaTexture };
 
-  initTexture() {
-    return this.twgl.createTextures(this.gl, {lava: {src: texture}}).lava;
-  }
+  let lavaMaterial = new ShaderMaterial({vertexShader: vShader, fragmentShader: fShader, uniforms});
+  let plane = new Mesh(new PlaneGeometry(1000, 1000, 100, 100), lavaMaterial);
+  plane.geometry.vertices
+  plane.rotation.x = -Math.PI / 2;
+  plane.position.y = -20.0;
+  return plane;
 }

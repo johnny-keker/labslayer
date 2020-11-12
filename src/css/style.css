@@ -11,10 +11,6 @@ body {
   height: 100vh;
 }
 
-canvas {
-  cursor:none
-}
-
 .controls {
   color: white;
   border-style: solid;
