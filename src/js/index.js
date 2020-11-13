@@ -2,16 +2,18 @@ import "./../css/style.css";
 
 import {
   Scene,
-  Vector3
+  Vector3,
+  Raycaster
 } from "three";
 
 import Camera from './classes/camera';
 import Renderer from './classes/renderer';
-import * as Lava from './classes/lava';
+import Level from './classes/level';
 import * as TWEEN from "@tweenjs/tween.js";
-import * as Light from "./classes/light";
+import Light from "./classes/light";
 
 import {WEBGL} from "three/examples/jsm/WebGL.js";
+import { PointerLockControls } from "./classes/controls";
 
 if (WEBGL.isWebGLAvailable()) {
   init();
@@ -24,6 +26,12 @@ let x = 0;
 let y = 0;
 let mouseLocked = false;
 let rotations = [0,0,0];
+
+let moveForward = false;
+let moveLeft = false;
+let moveBackward = false;
+let moveRight = false;
+let canJump = true;
 
 function degToRad(d) {
   return d * Math.PI / 180;
@@ -41,54 +49,139 @@ function init() {
   canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
   document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
 
-  canvas.onclick = function() {
-    canvas.requestPointerLock();
-    mouseLocked = true;
-  }
-
   let camera = new Camera(renderer.threeRenderer);
 
-  console.log(camera.threeCamera.rotation);
+  let controls = new PointerLockControls(camera.threeCamera, container);
 
-  window.onkeydown = function(e) { if (e.keyCode == 27) mouseLocked = false; }
-  document.onmousemove = updatePosition;
+  //window.onkeydown = function(e) { if (e.keyCode == 27) mouseLocked = false; }
+  //document.onmousemove = onMouseMove;
 
-  function updatePosition(e) {
-    if (!mouseLocked) return;
-    x += e.movementX;//matrix.radToDeg(radX);
-    y += e.movementY;//matrix.radToDeg(radY);
-    if (x < -180) x = 180;
-    else if (x > 180) x = -180;
-    if (y < -70) y = -70;
-    else if (y > 70) y = 70;
-    camera.threeCamera.rotation.setFromVector3(new Vector3(0, -degToRad(x), 0));
-    //console.log(camera.threeCamera.position);
-    //camera.threeCamera.rotation.y += degToRad(e.movementX);
+  canvas.onclick = function() {
+    controls.lock();
   }
+
+  scene.add(controls.getObject());
+
+
+  const onKeyDown = function (event) {
+    switch ( event.keyCode ) {
+      case 38: // up
+      case 87: // w
+        moveForward = true;
+        break;
+      case 37: // left
+      case 65: // a
+        moveLeft = true;
+        break;
+      case 40: // down
+      case 83: // s
+        moveBackward = true;
+        break;
+      case 39: // right
+      case 68: // d
+        moveRight = true;
+        break;
+      case 32: // space
+        if (canJump === true) velocity.y += 350;
+        canJump = false;
+        break;
+    }
+  };
+
+  const onKeyUp = function (event) {
+    switch (event.keyCode) {
+      case 38: // up
+      case 87: // w
+        moveForward = false;
+        break;
+      case 37: // left
+      case 65: // a
+        moveLeft = false;
+        break;
+      case 40: // down
+      case 83: // s
+        moveBackward = false;
+        break;
+      case 39: // right
+      case 68: // d
+        moveRight = false;
+        break;
+    }
+  };
+
+  //let raycaster = new Raycaster( new Vector3(), new Vector3( 0, - 1, 0 ), 0, 10 );
+
+  document.addEventListener( 'keydown', onKeyDown, false );
+	document.addEventListener( 'keyup', onKeyUp, false );
 
   const uniforms = {
     uPhase: { value: 0.0 }
   }
 
-  const lava = Lava.default(uniforms);
-  scene.add(lava);
+  const level = new Level(scene, uniforms);
 
-  Light.default(scene);
+  const light = new Light(scene, camera.threeCamera);
 
   function update(delta) {
       TWEEN.update();
   }
+
+  const velocity = new Vector3();
+  const direction = new Vector3();
+  let prevTime = performance.now();
 
   function animate() {
     requestAnimationFrame(animate);
     //delta = clock.getDelta();
     //update(delta);
     uniforms.uPhase.value += 0.1;
-    renderer.render(scene, camera.threeCamera);
     //lava.rotation.z += 1;
     //camera.threeCamera.rotation.y += 0.01;
     //camera.threeCamera.rotation.x += 0.01;
     //console.log(camera.threeCamera.rotation.x);
+    const time = performance.now();
+    if (controls.isLocked === true) {
+      //raycaster.ray.origin.copy(controls.getObject().position);
+      //raycaster.ray.origin.y -= 10;
+      //const intersections = raycaster.intersectObjects( objects );
+      //const onObject = intersections.length > 0;
+
+      const delta = (time - prevTime) / 1000;
+
+      velocity.x -= velocity.x * 7.0 * delta;
+      velocity.z -= velocity.z * 7.0 * delta;
+
+      velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+      direction.z = Number(moveForward) - Number(moveBackward);
+      direction.x = Number(moveRight) - Number(moveLeft);
+      direction.normalize(); // this ensures consistent movements in all directions
+
+      if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
+      if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+      /*
+      let onObject = false;
+      if (onObject === true) {
+        velocity.y = Math.max( 0, velocity.y );
+        canJump = true;
+      }
+      */
+
+      controls.moveRight(-velocity.x * delta);
+      controls.moveForward(-velocity.z * delta);
+
+      controls.getObject().position.y += (velocity.y * delta); // new behavior
+
+      if (controls.getObject().position.y < 10) {
+        velocity.y = 0;
+        controls.getObject().position.y = 10;
+        canJump = true;
+      }
+      //console.log(camera.threeCamera.position);
+    }
+    prevTime = time;
+    light.updateSpotlight();
+    renderer.render( scene, camera.threeCamera );
   }
 
   animate();

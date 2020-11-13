@@ -1,4 +1,4 @@
-import {Mesh, RepeatWrapping, ShaderMaterial, PlaneGeometry, TextureLoader, BufferGeometry, BufferAttribute, ImageUtils } from "three";
+import {Mesh, RepeatWrapping, ShaderMaterial, PlaneGeometry, TextureLoader } from "three";
 import lavaTextureFile from '../../textures/lava.jpg';
 
 const vShader = `
@@ -23,19 +23,22 @@ void main() {
   //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }`
 
-export default function lava(uniforms) {
-  const textureLoader = new TextureLoader();
+export default class Lava {
+  constructor(uniforms) {
+    const textureLoader = new TextureLoader();
 
-  let lavaTexture = textureLoader.load(lavaTextureFile);
-  lavaTexture.wrapS = RepeatWrapping;
-  lavaTexture.wrapT = RepeatWrapping;
-  lavaTexture.repeat.set(100, 100);
-  uniforms.uTexture = { type: "t", value: lavaTexture };
+    let lavaTexture = textureLoader.load(lavaTextureFile);
+    lavaTexture.wrapS = RepeatWrapping;
+    lavaTexture.wrapT = RepeatWrapping;
+    lavaTexture.repeat.set(100, 100);
+    uniforms.uTexture = { type: "t", value: lavaTexture };
 
-  let lavaMaterial = new ShaderMaterial({vertexShader: vShader, fragmentShader: fShader, uniforms});
-  let plane = new Mesh(new PlaneGeometry(1000, 1000, 100, 100), lavaMaterial);
-  plane.geometry.vertices
-  plane.rotation.x = -Math.PI / 2;
-  plane.position.y = -20.0;
-  return plane;
+    let lavaMaterial = new ShaderMaterial({vertexShader: vShader, fragmentShader: fShader, uniforms});
+    let plane = new Mesh(new PlaneGeometry(540, 540, 100, 100), lavaMaterial);
+    plane.geometry.vertices
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.y = -20.0;
+    plane.position.z -= 605;
+    this.plane = plane;
+  }
 }
