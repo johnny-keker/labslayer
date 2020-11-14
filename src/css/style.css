@@ -23,3 +23,22 @@ body {
   margin: 3px;
   margin-left: 11%;
 }
+
+img {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+}
+
+canvas {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+
+.parent {
+  position: relative;
+}

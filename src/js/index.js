@@ -44,6 +44,10 @@ function init() {
   const canvas = document.createElement("CANVAS");
   document.body.appendChild(canvas);
 
+  const image = document.createElement("img");
+  image.src = "../hud/HUD-1.png";
+  container.appendChild(image);
+
   let renderer = new Renderer(container, canvas);
 
   canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
@@ -57,6 +61,10 @@ function init() {
   //document.onmousemove = onMouseMove;
 
   canvas.onclick = function() {
+    controls.lock();
+  }
+
+  image.onclick = function() {
     controls.lock();
   }
 
@@ -170,6 +178,11 @@ function init() {
       controls.moveRight(-velocity.x * delta);
       controls.moveForward(-velocity.z * delta);
 
+      var [match, nX, nZ] = level.validatePlayerPosition(camera.threeCamera.position.x, camera.threeCamera.position.z);
+      if (match) {
+        camera.threeCamera.position.set(nX, 10, nZ);
+      }
+
       controls.getObject().position.y += (velocity.y * delta); // new behavior
 
       if (controls.getObject().position.y < 10) {
@@ -180,7 +193,7 @@ function init() {
       //console.log(camera.threeCamera.position);
     }
     prevTime = time;
-    light.updateSpotlight();
+    light.updateSpotlight(time);
     renderer.render( scene, camera.threeCamera );
   }
 

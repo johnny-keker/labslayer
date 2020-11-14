@@ -9,7 +9,7 @@ varying vec2 vTexcoord;
 void main() {
   vec4 pos = vec4(position, 1.0);
   pos.z = 1.0 * sin(0.4 * pos.x + uPhase) * sin(0.4 * pos.y + uPhase);
-  vTexcoord = vec2(round(pos.x) / 20.0, round(pos.y) / 20.0);
+  vTexcoord = vec2(round(pos.x) / 40.0, round(pos.y) / 40.0);
   gl_Position = projectionMatrix * modelViewMatrix * pos;
 }`
 

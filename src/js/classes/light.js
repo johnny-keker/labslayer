@@ -3,7 +3,7 @@ import {PointLight, DirectionalLight, HemisphereLight, CameraHelper, SpotLight} 
 
 export default class Light {
     constructor(scene, camera){
-        var hemiLight = new HemisphereLight(0xffffff, 0xffffff, 0.3);
+        var hemiLight = new HemisphereLight(0xff0000, 0xff0000, 0.5);
         hemiLight.color.setHSL(0.6, 1, 0.6);
         hemiLight.groundColor.setHSL(0.095, 0.8, 0.5);
         hemiLight.position.set(0, 30, 0);
@@ -31,7 +31,7 @@ export default class Light {
         //scene.add(dirLight.target);
 
         let spotLight = new SpotLight(0xffffff, 0.5, 150);
-        spotLight.power = 15;
+        spotLight.power = 12;
         spotLight.angle = 0.4;
         spotLight.decay = 1;
         spotLight.penumbra = 0.1;
@@ -49,14 +49,24 @@ export default class Light {
         //var helper = new CameraHelper(dirLight.shadow.camera);
         //scene.add(helper);
 
-        //let pointLight = new PointLight(0xffff55, 3);
-        //pointLight.distance = 12;
-        //pointLight.position.set(0, 0, 40);
-        //pointLight.castShadow = true;
-        //scene.add(pointLight);
+        let pointLight = new PointLight(0xe02f10, 3);
+        pointLight.distance = 500;
+        pointLight.position.set(0, 30, -605);
+        pointLight.castShadow = true;
+        scene.add(pointLight);
+        this.pointLight = pointLight;
+
+        let pointLight2 = new PointLight(0xe02f10, 3);
+        pointLight2.distance = 500;
+        pointLight2.position.set(0, 30, -725);
+        pointLight2.castShadow = true;
+        scene.add(pointLight2);
+        this.pointLight2 = pointLight2;
     };
-    
-    updateSpotlight() {
+
+    updateSpotlight(time) {
+        this.pointLight.intensity = 1 + 5 * Math.max(Math.sin(time / 700), 0);
+        this.pointLight2.intensity = 6 - this.pointLight.intensity;
         this.spotLight.position.copy(this.camera.position);
     }
 }
