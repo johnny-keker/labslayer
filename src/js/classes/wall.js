@@ -16,6 +16,7 @@ export default class Wall {
       plane.position.x += pX;
       plane.position.z += pZ;
       plane.position.y = 17;
+      //plane.castShadow = true;
       this.plane = plane;
     }
 
@@ -33,27 +34,5 @@ export default class Wall {
         this.barrier = pX > 0 ? pX - 0.5 : pX + 0.5;
         break;
     }
-  }
-
-  validatePosition(x, z) {
-    switch (this.r) {
-      case Math.PI:
-        if (x >= this.lEdge && x <= this.rEdge && z > this.barrier)
-          return [true, x, this.barrier];
-        break;
-      case Math.PI / 2:
-        if (z >= this.lEdge && z <= this.rEdge && x < this.barrier)
-          return [true, this.barrier, z];
-        break;
-      case -Math.PI / 2:
-        if (z >= this.lEdge && z <= this.rEdge && x > this.barrier)
-          return [true, this.barrier, z];
-        break;
-      case 0:
-        if (x >= this.lEdge && x <= this.rEdge && z < this.barrier)
-          return [true, x, this.barrier];
-        break;
-    }
-    return [false, 0, 0];
   }
 }

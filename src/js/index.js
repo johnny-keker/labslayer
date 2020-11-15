@@ -117,6 +117,10 @@ function init() {
     }
   };
 
+  var vector = new Vector3(0, 0, -1);
+
+  let raycaster = new Raycaster( new Vector3(), new Vector3( 0, - 1, 0 ), 0, 30 );
+
   //let raycaster = new Raycaster( new Vector3(), new Vector3( 0, - 1, 0 ), 0, 10 );
 
   document.addEventListener( 'keydown', onKeyDown, false );
@@ -149,11 +153,15 @@ function init() {
     //console.log(camera.threeCamera.rotation.x);
     const time = performance.now();
     if (controls.isLocked === true) {
+      //var vectorF = camera.threeCamera.localToWorld(vector);
+      //vectorF.sub(camera.threeCamera.position).normalize();
       //raycaster.ray.origin.copy(controls.getObject().position);
+      //raycaster.ray.direction.copy(vectorF);
+      //raycaster.ray.direction.y = 0;
       //raycaster.ray.origin.y -= 10;
-      //const intersections = raycaster.intersectObjects( objects );
-      //const onObject = intersections.length > 0;
 
+      
+      //raycaster.ray.origin.y -= 10;
       const delta = (time - prevTime) / 1000;
 
       velocity.x -= velocity.x * 7.0 * delta;
@@ -167,6 +175,8 @@ function init() {
 
       if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
       if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+
+      var oldPosition = camera.threeCamera.position;
       /*
       let onObject = false;
       if (onObject === true) {
@@ -174,14 +184,22 @@ function init() {
         canJump = true;
       }
       */
+      let intersections;
+      var newPosition = camera.threeCamera.position;
 
-      controls.moveRight(-velocity.x * delta);
-      controls.moveForward(-velocity.z * delta);
+      newPosition = controls.moveRight(-velocity.x * delta);
+      raycaster.ray.origin.copy(newPosition);
+      intersections = raycaster.intersectObjects(level.floor.planes);
+      if (intersections.length == 0) newPosition = oldPosition;
+      oldPosition = newPosition;
 
-      var [match, nX, nZ] = level.validatePlayerPosition(camera.threeCamera.position.x, camera.threeCamera.position.z);
-      if (match) {
-        camera.threeCamera.position.set(nX, 10, nZ);
-      }
+      newPosition = controls.moveForward(-velocity.z * delta, newPosition);
+      raycaster.ray.origin.copy(newPosition);
+      intersections = raycaster.intersectObjects(level.floor.planes);
+      if (intersections.length == 0) newPosition = oldPosition;
+
+      
+      controls.getObject().position.set(newPosition.x, newPosition.y, newPosition.z);
 
       controls.getObject().position.y += (velocity.y * delta); // new behavior
 

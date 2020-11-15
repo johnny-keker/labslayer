@@ -121,7 +121,7 @@ var PointerLockControls = function ( camera, domElement ) {
 
 	}();
 
-	this.moveForward = function ( distance ) {
+	this.moveForward = function ( distance, cPos ) {
 
 		// move forward parallel to the xz-plane
 		// assumes camera.up is y-up
@@ -129,8 +129,12 @@ var PointerLockControls = function ( camera, domElement ) {
 		vec.setFromMatrixColumn( camera.matrix, 0 );
 
 		vec.crossVectors( camera.up, vec );
+		var res = new Vector3();
+		res.copy(cPos);
+		res.addScaledVector( vec, distance );
+		return res;
 
-		camera.position.addScaledVector( vec, distance );
+		//camera.position.addScaledVector( vec, distance );
 
 	};
 
@@ -138,7 +142,11 @@ var PointerLockControls = function ( camera, domElement ) {
 
 		vec.setFromMatrixColumn( camera.matrix, 0 );
 
-		camera.position.addScaledVector( vec, distance );
+		var res = new Vector3();
+		res.copy(camera.position);
+		res.addScaledVector( vec, distance );
+		return res;
+		//camera.position.addScaledVector( vec, distance );
 
 	};
 
