@@ -1,4 +1,4 @@
-import {Mesh, MeshPhongMaterial, MeshStandardMaterial, PlaneGeometry, BoxGeometry, RepeatWrapping, TextureLoader} from "three";
+import {Mesh, MeshPhongMaterial, MeshStandardMaterial, PlaneGeometry, BoxGeometry, SphereGeometry, RepeatWrapping, TextureLoader, Vector3} from "three";
 
 let mat = new MeshStandardMaterial({color: 0x00ff00});
 let targetInfos = [
@@ -6,7 +6,8 @@ let targetInfos = [
 ]
 
 export default class Target {
-  constructor() {
+  constructor(scene) {
+    this.scene = scene;
     this.planes = [];
 
     targetInfos.forEach(wI => {
@@ -17,5 +18,14 @@ export default class Target {
       //plane.castShadow = true;
       this.planes.push(plane);
     });
+    this.bullets = [];
+  }
+
+  shoot(playerPosition) {
+    var bullet = new Mesh(new SphereGeometry(10, 10, 10), mat);
+    bullet.position.copy(this.planes[0].position);
+    bullet.lookAt(playerPosition);
+    this.bullets.push(bullet);
+    this.scene.add(bullet);
   }
 }

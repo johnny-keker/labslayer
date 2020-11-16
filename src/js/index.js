@@ -122,8 +122,6 @@ function init() {
   let raycaster = new Raycaster( new Vector3(), new Vector3( 0, - 1, 0 ), 0, 30 );
   let gun_ray = new Raycaster( new Vector3(), new Vector3(0, -1, 0 ), 0, 1200);
 
-  //let raycaster = new Raycaster( new Vector3(), new Vector3( 0, - 1, 0 ), 0, 10 );
-
   document.addEventListener( 'keydown', onKeyDown, false );
   document.addEventListener( 'keyup', onKeyUp, false );
   document.addEventListener('mousedown', function(event) {
@@ -131,8 +129,10 @@ function init() {
     vector.unproject(camera.threeCamera);
     gun_ray.set(camera.threeCamera.position, vector.sub(camera.threeCamera.position).normalize());
     let intersections = gun_ray.intersectObjects(level.targets.planes);
-    if (intersections.length > 0)
+    if (intersections.length > 0) {
       console.log('HIT');
+      level.targets.shoot(controls.getObject().position);
+    }
     else
       console.log('MISS');
   });
@@ -210,6 +210,8 @@ function init() {
         controls.getObject().position.y = 10;
         canJump = true;
       }
+
+      level.update();
       //console.log(camera.threeCamera.position);
     }
     prevTime = time;
