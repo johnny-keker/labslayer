@@ -90,7 +90,7 @@ function init() {
         moveRight = true;
         break;
       case 32: // space
-        if (canJump === true) velocity.y += 350;
+        if (canJump === true) velocity.y += 200;
         canJump = false;
         break;
     }
