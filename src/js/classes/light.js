@@ -32,9 +32,9 @@ export default class Light {
 
         let spotLight = new SpotLight(0xffffff, 0.5, 150);
         spotLight.power = 12;
-        spotLight.angle = 0.4;
+        spotLight.angle = 0.6;
         spotLight.decay = 1;
-        spotLight.penumbra = 0.1;
+        spotLight.penumbra = 0.5;
         spotLight.distance = 2000;
         camera.add( spotLight.target );
         spotLight.target.position.set( 0, 0, -1 );

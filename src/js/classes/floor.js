@@ -23,7 +23,7 @@ export default class Floor {
       plane.position.y = -18.0;
       plane.position.x += pI.pX;
       plane.position.z += pI.pZ;
-      plane.castShadow = true;
+      //plane.castShadow = true;
       this.planes.push(plane)
     });
   }
