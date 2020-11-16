@@ -17,8 +17,6 @@ let wallInfos = [
   { sX: 300, pX: 75, pZ: -1070, r: -Math.PI / 2 }, // w13
 ]
 
-
-
 export default class Wall {
   constructor() {
     this.planes = [];

@@ -120,11 +120,22 @@ function init() {
   var vector = new Vector3(0, 0, -1);
 
   let raycaster = new Raycaster( new Vector3(), new Vector3( 0, - 1, 0 ), 0, 30 );
+  let gun_ray = new Raycaster( new Vector3(), new Vector3(0, -1, 0 ), 0, 1200);
 
   //let raycaster = new Raycaster( new Vector3(), new Vector3( 0, - 1, 0 ), 0, 10 );
 
   document.addEventListener( 'keydown', onKeyDown, false );
-	document.addEventListener( 'keyup', onKeyUp, false );
+  document.addEventListener( 'keyup', onKeyUp, false );
+  document.addEventListener('mousedown', function(event) {
+    vector.set(0, 0, -1);
+    vector.unproject(camera.threeCamera);
+    gun_ray.set(camera.threeCamera.position, vector.sub(camera.threeCamera.position).normalize());
+    let intersections = gun_ray.intersectObjects(level.targets.planes);
+    if (intersections.length > 0)
+      console.log('HIT');
+    else
+      console.log('MISS');
+  });
 
   const uniforms = {
     uPhase: { value: 0.0 }
@@ -153,15 +164,6 @@ function init() {
     //console.log(camera.threeCamera.rotation.x);
     const time = performance.now();
     if (controls.isLocked === true) {
-      //var vectorF = camera.threeCamera.localToWorld(vector);
-      //vectorF.sub(camera.threeCamera.position).normalize();
-      //raycaster.ray.origin.copy(controls.getObject().position);
-      //raycaster.ray.direction.copy(vectorF);
-      //raycaster.ray.direction.y = 0;
-      //raycaster.ray.origin.y -= 10;
-
-      
-      //raycaster.ray.origin.y -= 10;
       const delta = (time - prevTime) / 1000;
 
       velocity.x -= velocity.x * 7.0 * delta;

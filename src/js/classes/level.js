@@ -2,6 +2,7 @@ import Floor from './floor';
 import Lava from './lava';
 import Wall from './wall';
 import Roof from './roof';
+import Target from './target';
 
 export default class Level {
   constructor(scene, uniforms) {
@@ -16,6 +17,10 @@ export default class Level {
     scene.add(new Lava(uniforms).plane);
     this.walls = new Wall();
     this.walls.planes.forEach(e => {
+      scene.add(e);
+    });
+    this.targets = new Target();
+    this.targets.planes.forEach(e => {
       scene.add(e);
     });
   }
