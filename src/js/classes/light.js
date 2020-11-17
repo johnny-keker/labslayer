@@ -49,14 +49,14 @@ export default class Light {
         //var helper = new CameraHelper(dirLight.shadow.camera);
         //scene.add(helper);
 
-        let pointLight = new PointLight(0xe02f10, 3);
+        let pointLight = new PointLight(0x1da33f, 3);
         pointLight.distance = 500;
         pointLight.position.set(0, 30, -605);
         pointLight.castShadow = true;
         scene.add(pointLight);
         this.pointLight = pointLight;
 
-        let pointLight2 = new PointLight(0xe02f10, 3);
+        let pointLight2 = new PointLight(0x1da33f, 3);
         pointLight2.distance = 500;
         pointLight2.position.set(0, 30, -725);
         pointLight2.castShadow = true;

@@ -124,6 +124,7 @@ function init() {
 
   document.addEventListener( 'keydown', onKeyDown, false );
   document.addEventListener( 'keyup', onKeyUp, false );
+  /*
   document.addEventListener('mousedown', function(event) {
     vector.set(0, 0, -1);
     vector.unproject(camera.threeCamera);
@@ -136,12 +137,13 @@ function init() {
     else
       console.log('MISS');
   });
+  */
 
   const uniforms = {
     uPhase: { value: 0.0 }
   }
 
-  const level = new Level(scene, uniforms);
+  const level = new Level(scene, uniforms, camera.threeCamera);
 
   const light = new Light(scene, camera.threeCamera);
 
@@ -211,7 +213,7 @@ function init() {
         canJump = true;
       }
 
-      level.update();
+      level.update(delta);
       //console.log(camera.threeCamera.position);
     }
     prevTime = time;
