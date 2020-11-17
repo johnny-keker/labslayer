@@ -1,3 +1,8 @@
+import * as ghpages from 'gh-pages';
+
+ghpages.publish('dist1', function(err) {});
+return;
+
 import "./../css/style.css";
 
 import {
