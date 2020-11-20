@@ -27,6 +27,8 @@ export default class Level {
       new Enemy(this.bullets, player, scene, 270, -335, this.walls.planes)
     ];
 
+    this.scene = scene;
+
     
     //this.targets = new Target(scene);
     //this.targets.planes.forEach(e => {
@@ -39,9 +41,13 @@ export default class Level {
     if (this.bullets.length == 0) return;
     this.bullets.forEach(b => {
       let vec = new Vector3();
-      vec.setFromMatrixColumn( b.matrix, 0 );
+      vec.setFromMatrixColumn(b.object.matrix, 0);
       vec.crossVectors( new Vector3(0, 1, 0), vec );
-      b.position.addScaledVector(vec, -2);
+      b.object.position.addScaledVector(vec, -2);
+      b.dis -= 2;
+      if (b.dis <= 0) {
+        this.scene.remove(b.object);
+      }
     });
   }
 

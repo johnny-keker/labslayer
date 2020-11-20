@@ -12,7 +12,6 @@ export default class Camera {
     this.threeCamera = new PerspectiveCamera(fov, aspect, near, far);
     this.threeCamera.position.set(0, 10, 0);
     //this.threeCamera.up = new Vector3(0, 0, 1);
-
     // Initial sizing
     this.updateSize(renderer);
 

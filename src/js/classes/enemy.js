@@ -38,8 +38,6 @@ export default class Enemy {
   shoot(playerPosition) {
     this.sphere.lookAt(playerPosition);
     let ray = new Raycaster(this.sphere.position, this.sphere.getWorldDirection().normalize(), 0, 2000);
-    //console.log(ray.ray.direction);
-    //this.ray.ray.origin.y = playerPosition.y;
     let playerSphere = new Mesh(new SphereGeometry(1, 1), mat1);
     playerSphere.position.set(playerPosition.x, playerPosition.y, playerPosition.z);
     playerSphere.updateMatrixWorld();
@@ -59,7 +57,7 @@ export default class Enemy {
     var bullet = new Mesh(new SphereGeometry(8, 8), mat2);
     bullet.position.copy(this.sphere.position);
     bullet.lookAt(playerPosition);
-    this.bullets.push(bullet);
+    this.bullets.push({object: bullet, dis: minWallDis});
     this.scene.add(bullet);
   }
 
