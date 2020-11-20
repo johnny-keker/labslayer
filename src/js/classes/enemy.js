@@ -37,7 +37,7 @@ export default class Enemy {
 
   shoot(playerPosition) {
     this.sphere.lookAt(playerPosition);
-    let ray = new Raycaster(this.sphere.position, this.sphere.getWorldDirection().normalize(), 0, 1200);
+    let ray = new Raycaster(this.sphere.position, this.sphere.getWorldDirection().normalize(), 0, 2000);
     //console.log(ray.ray.direction);
     //this.ray.ray.origin.y = playerPosition.y;
     let playerSphere = new Mesh(new SphereGeometry(1, 1), mat1);
@@ -47,7 +47,12 @@ export default class Enemy {
     //this.arrow = new ArrowHelper( this.sphere.getWorldDirection().normalize(), this.sphere.position, 100, Math.random() * 0xffffff );
     //this.scene.add(this.arrow);
     let playerDis = ray.intersectObject(playerSphere)[0].distance;
-    let minWallDis = ray.intersectObjects(this.walls)[0].distance;
+    let wIntersect = ray.intersectObjects(this.walls)[0];
+    let minWallDis = 0;
+    if (wIntersect === undefined)
+      minWallDis = 1000;
+    else
+      minWallDis = wIntersect.distance;
     if (minWallDis < playerDis) return;
 
 

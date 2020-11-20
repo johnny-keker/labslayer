@@ -1,8 +1,3 @@
-import * as ghpages from 'gh-pages';
-
-ghpages.publish('dist1', function(err) {});
-return;
-
 import "./../css/style.css";
 
 import {
@@ -50,7 +45,7 @@ function init() {
   document.body.appendChild(canvas);
 
   const image = document.createElement("img");
-  image.src = "../hud/HUD-1.png";
+  image.src = "../hud/HUD_gun.png";
   container.appendChild(image);
 
   let renderer = new Renderer(container, canvas);
