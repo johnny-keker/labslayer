@@ -11,6 +11,7 @@ import Renderer from './classes/renderer';
 import Level from './classes/level';
 import * as TWEEN from "@tweenjs/tween.js";
 import Light from "./classes/light";
+import hud from "../hud/HUD_gun.png";
 
 import {WEBGL} from "three/examples/jsm/WebGL.js";
 import Player from "./classes/player";
@@ -30,7 +31,7 @@ function init() {
   document.body.appendChild(canvas);
 
   const image = document.createElement("img");
-  image.src = "../hud/HUD_gun.png";
+  image.src = hud;
   container.appendChild(image);
 
   let renderer = new Renderer(container, canvas);
