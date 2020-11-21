@@ -85,17 +85,10 @@ function init() {
 
   function animate() {
     requestAnimationFrame(animate);
-    //delta = clock.getDelta();
-    //update(delta);
     uniforms.uPhase.value += 0.1;
-    //lava.rotation.z += 1;
-    //camera.threeCamera.rotation.y += 0.01;
-    //camera.threeCamera.rotation.x += 0.01;
-    //console.log(camera.threeCamera.rotation.x);
     const time = performance.now();
     if (player.controls.isLocked === true) {
       const delta = (time - prevTime) / 1000;
-    
       player.update(delta);
       level.update(delta);
     }

@@ -28,6 +28,7 @@ export default class Level {
     ];
 
     this.scene = scene;
+    this.player = player;
 
     
     //this.targets = new Target(scene);
@@ -39,16 +40,28 @@ export default class Level {
   update(time) {
     this.enemies.forEach(e => {e.update(time)});
     if (this.bullets.length == 0) return;
-    this.bullets.forEach(b => {
+    for (let i = this.bullets.length - 1; i > 0; i--)
+    {
+      let b = this.bullets[i];
       let vec = new Vector3();
       vec.setFromMatrixColumn(b.object.matrix, 0);
-      vec.crossVectors( new Vector3(0, 1, 0), vec );
+      vec.crossVectors(new Vector3(0, 1, 0), vec);
       b.object.position.addScaledVector(vec, -2);
       b.dis -= 2;
-      if (b.dis <= 0) {
+      let playerDistance = b.object.position.distanceTo(this.player.position);
+      if (playerDistance <= 10) {
         this.scene.remove(b.object);
+        this.bullets.splice(i, 1);
+        console.log("player hit!");
+        i--;
       }
-    });
+      else if (b.dis <= 0) {
+        this.scene.remove(b.object);
+        this.bullets.splice(i, 1);
+        i--; 
+      }
+      //console.log(this.bullets);
+    }
   }
 
   moveLevel(x, z) {
