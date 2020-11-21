@@ -3,6 +3,7 @@ import Lava from './lava';
 import Wall from './wall';
 import Roof from './roof';
 import Enemy from './enemy';
+import Boss from './boss'
 import { Vector3 } from 'three';
 
 export default class Level {
@@ -29,6 +30,7 @@ export default class Level {
       new Enemy(this.bullets, camera, scene, -270, -875, this.walls.planes),
     ];
 
+    this.boss = new Boss(scene);
     this.scene = scene;
     this.camera = camera;
     this.player = player;

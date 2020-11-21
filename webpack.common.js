@@ -5,12 +5,12 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 module.exports = {
     entry: './src/js/index.js',
     plugins: [
-        new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             title: 'labslayer',
             meta: {
-                "viewport": 'width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'
-                //"property": {"property": "og:image", "content": "ogimage.jpg"}
+                "viewport": 'width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0',
+                "property": {"property": "og:image", "content": "ogimage.jpg"}
             },
             favicon: "src/favicon.ico"
         })
@@ -70,15 +70,6 @@ module.exports = {
                     {
                         loader: 'file-loader',
                         options: {outputPath: 'audio'} // where to place images referenced in CSS and modules
-                    }
-                ]
-            },
-            {
-                test: /\.obj$/,
-                use: [
-                    {
-                        loader: 'webpack-obj-loader',
-                        options: {outputPath: 'models'}
                     }
                 ]
             }
