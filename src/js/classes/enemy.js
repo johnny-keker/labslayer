@@ -4,13 +4,14 @@ let mat1 = new MeshStandardMaterial({color: 0xa5b5a9});
 let mat2 = new MeshStandardMaterial({color: 0x1da33f});
 
 export default class Enemy {
-  constructor(bullets, player, scene, pX, pZ, walls) {
+  constructor(bullets, player, scene, pX, pZ, walls, boss) {
     this.scene = scene;
     this.timer = 1.5;
     this.player = player;
     this.bullets = bullets;
     this.walls = walls;
     this.hp = 10;
+    this.boss = boss;
 
     var downCone = new Mesh(new ConeGeometry(10, 30), mat1);
     downCone.position.x = pX;
@@ -63,13 +64,25 @@ export default class Enemy {
       minWallDis = 1000;
     else
       minWallDis = wIntersect.distance;
-    if (minWallDis < playerDis) return;
 
+      
+    let bIntersect = ray.intersectObject(this.boss.hitbox)[0]
+    let minBossDis = 0;
+    if (bIntersect === undefined)
+      minBossDis = 100000;
+    else
+      minBossDis = bIntersect.distance;
+    if (minWallDis < playerDis || minBossDis < playerDis) return;
 
+    let minDis = 0;
+    if (minWallDis < minBossDis)
+      minDis = minWallDis;
+    else
+      minDis = minBossDis;
     var bullet = new Mesh(new SphereGeometry(8, 8), mat1);
     bullet.position.copy(this.sphere.position);
     bullet.lookAt(playerPosition);
-    this.bullets.push({object: bullet, dis: minWallDis});
+    this.bullets.push({object: bullet, dis: minDis});
     this.scene.add(bullet);
   }
 

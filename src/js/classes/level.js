@@ -23,21 +23,26 @@ export default class Level {
     });
     this.bullets = [];
 
+    this.boss = new Boss(scene, this.bullets, this.walls.planes);
     this.enemies = [
-      new Enemy(this.bullets, camera, scene, -270, -335, this.walls.planes),
-      new Enemy(this.bullets, camera, scene, 270, -335, this.walls.planes),
-      new Enemy(this.bullets, camera, scene, 270, -875, this.walls.planes),
-      new Enemy(this.bullets, camera, scene, -270, -875, this.walls.planes),
+      // new Enemy(this.bullets, camera, scene, -270, -335, this.walls.planes, this.boss.object),
+      // new Enemy(this.bullets, camera, scene, 270, -335, this.walls.planes, this.boss.object),
+      // new Enemy(this.bullets, camera, scene, 270, -875, this.walls.planes, this.boss.object),
+      new Enemy(this.bullets, camera, scene, -270, -875, this.walls.planes, this.boss),
     ];
 
-    this.boss = new Boss(scene);
     this.scene = scene;
     this.camera = camera;
     this.player = player;
   }
 
+  aliveEnemiesCount() {
+    return this.enemies.filter(e => e.hp > 0).length;
+  }
+
   update(time) {
     this.enemies.forEach(e => { if(e.hp > 0) e.update(time)});
+    this.boss.update(time);
     if (this.bullets.length == 0) return;
     for (let i = this.bullets.length - 1; i >= 0; i--)
     {

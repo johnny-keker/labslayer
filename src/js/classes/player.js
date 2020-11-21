@@ -108,13 +108,20 @@ export default class Player {
     this.gun_direction.set(0, 0, -1);
     this.gun_direction.unproject(this.camera);
     this.gun_ray.set(this.camera.position, this.gun_direction.sub(this.camera.position).normalize());
+    if (this.level.aliveEnemiesCount() != 0) {
     for (let i = 0; i < this.level.enemies.length; i++) {
-      let enemy = this.level.enemies[i];
-      let intersection = this.gun_ray.intersectObjects([enemy.sphere, enemy.upCone, enemy.downCone]);
+        let enemy = this.level.enemies[i];
+        let intersection = this.gun_ray.intersectObjects([enemy.sphere, enemy.upCone, enemy.downCone]);
+        if (intersection.length > 0) {
+          enemy.onhit();
+        }
+      };
+    } else {
+      let intersection = this.gun_ray.intersectObject(this.level.boss.hitbox);
       if (intersection.length > 0) {
-        enemy.onhit();
+        this.level.boss.onhit();
       }
-    };
+    }
   };
 
   onclick() {
