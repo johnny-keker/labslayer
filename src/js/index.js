@@ -11,7 +11,6 @@ import Renderer from './classes/renderer';
 import Level from './classes/level';
 import * as TWEEN from "@tweenjs/tween.js";
 import Light from "./classes/light";
-import hud from "../hud/HUD_gun.png";
 
 import {WEBGL} from "three/examples/jsm/WebGL.js";
 import Player from "./classes/player";
@@ -30,10 +29,6 @@ function init() {
   const canvas = document.createElement("CANVAS");
   document.body.appendChild(canvas);
 
-  const image = document.createElement("img");
-  image.src = hud;
-  container.appendChild(image);
-
   let renderer = new Renderer(container, canvas);
 
   canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
@@ -46,10 +41,6 @@ function init() {
   //document.onmousemove = onMouseMove;
 
   canvas.onclick = function() {
-    player.onclick();
-  }
-
-  image.onclick = function() {
     player.onclick();
   }
   /*
@@ -71,9 +62,9 @@ function init() {
     uPhase: { value: 0.0 }
   }
 
-  const level = new Level(scene, uniforms, camera.threeCamera);
-
-  let player = new Player(scene, camera.threeCamera, level, container);
+  let player = new Player(scene, camera.threeCamera, null, container);
+  const level = new Level(scene, uniforms, camera.threeCamera, player);
+  player.level = level;
 
   const light = new Light(scene, camera.threeCamera);
 

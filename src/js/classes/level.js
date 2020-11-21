@@ -7,7 +7,7 @@ import Enemy from './enemy';
 import { Vector3 } from 'three';
 
 export default class Level {
-  constructor(scene, uniforms, player) {
+  constructor(scene, uniforms, camera, player) {
     this.floor = new Floor();
     this.floor.planes.forEach(e => {
       scene.add(e);
@@ -24,10 +24,11 @@ export default class Level {
     this.bullets = [];
 
     this.enemies = [
-      new Enemy(this.bullets, player, scene, 270, -335, this.walls.planes)
+      new Enemy(this.bullets, camera, scene, 270, -335, this.walls.planes)
     ];
 
     this.scene = scene;
+    this.camera = camera;
     this.player = player;
 
     
@@ -48,11 +49,11 @@ export default class Level {
       vec.crossVectors(new Vector3(0, 1, 0), vec);
       b.object.position.addScaledVector(vec, -2);
       b.dis -= 2;
-      let playerDistance = b.object.position.distanceTo(this.player.position);
+      let playerDistance = b.object.position.distanceTo(this.camera.position);
       if (playerDistance <= 10) {
         this.scene.remove(b.object);
         this.bullets.splice(i, 1);
-        console.log("player hit!");
+        this.player.onhit();
         i--;
       }
       else if (b.dis <= 0) {

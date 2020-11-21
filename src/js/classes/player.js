@@ -4,6 +4,10 @@ import {
 } from "three";
 
 import { PointerLockControls } from "./controls";
+import hud from "../../hud/HUD_gun.png";
+import hud1 from "../../hud/HUD_gun_1.png";
+import hud2 from "../../hud/HUD_gun_2.png";
+import wasted from "../../hud/wasted.png";
 
 let moveForward = false;
 let moveLeft = false;
@@ -16,8 +20,19 @@ export default class Player {
     this.level = level;
     this.camera = camera;
     this.scene = scene;
-    this.controls = new PointerLockControls(camera, container);
-  
+    let controls = new PointerLockControls(camera, container);
+    this.controls = controls;
+
+    this.huds = [hud2, hud1, hud];
+    this.hudId = 2;
+    const hudImage = document.createElement("img");
+    hudImage.src = hud;
+    container.appendChild(hudImage);
+    this.hudImage = hudImage;
+    hudImage.onclick = function() {
+      controls.lock();
+    }
+    
     this.gun_direction = new Vector3(0, 0, -1);
     this.gun_ray = new Raycaster(new Vector3(), new Vector3(0, -1, 0), 0, 1200);
     this.ground_ray = new Raycaster(new Vector3(), new Vector3(0, -1, 0), 0, 30);
@@ -40,8 +55,6 @@ export default class Player {
     this.direction.z = Number(moveForward) - Number(moveBackward);
     this.direction.x = Number(moveRight) - Number(moveLeft);
     this.direction.normalize(); // this ensures consistent movements in all directions
-    if (this.moveForward)
-      console.log('goooooooooo');
     if (moveForward || moveBackward) this.velocity.z -= this.direction.z * 400.0 * delta;
     if (moveLeft || moveRight) this.velocity.x -= this.direction.x * 400.0 * delta;
 
@@ -76,6 +89,17 @@ export default class Player {
   onclick() {
     this.controls.lock();
   };
+
+  onhit() {
+    this.hudId--;
+    if (this.hudId == -1) {
+      this.controls.unlock();
+      this.hudImage.src = wasted;
+      this.hudImage.onclick = function() {};
+      return;
+    }
+    this.hudImage.src = this.huds[this.hudId];
+  }
 
   onKeyDown(event) {
     switch (event.keyCode) {
