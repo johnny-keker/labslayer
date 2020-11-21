@@ -3,7 +3,8 @@ import "./../css/style.css";
 import {
   Scene,
   Vector3,
-  Raycaster
+  Raycaster,
+  AudioListener
 } from "three";
 
 import Camera from './classes/camera';
@@ -48,7 +49,10 @@ function init() {
     uPhase: { value: 0.0 }
   }
 
-  let player = new Player(scene, camera.threeCamera, null, container);
+  const listener = new AudioListener();
+  camera.threeCamera.add(listener);
+
+  let player = new Player(scene, camera.threeCamera, null, container, listener);
   const level = new Level(scene, uniforms, camera.threeCamera, player);
   player.level = level;
 

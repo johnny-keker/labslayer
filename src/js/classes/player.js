@@ -1,6 +1,7 @@
 import {
   Vector3,
-  Raycaster
+  Raycaster,
+  Audio, AudioListener, AudioLoader
 } from "three";
 
 import { PointerLockControls } from "./controls";
@@ -8,6 +9,7 @@ import hud from "../../hud/HUD_gun.png";
 import hud1 from "../../hud/HUD_gun_1.png";
 import hud2 from "../../hud/HUD_gun_2.png";
 import wasted from "../../hud/wasted.png";
+import shoot from "../../sound/shoot.ogg";
 
 let moveForward = false;
 let moveLeft = false;
@@ -16,12 +18,23 @@ let moveRight = false;
 let canJump = true;
 
 export default class Player {
-  constructor(scene, camera, level, container) {
+  constructor(scene, camera, level, container, listener) {
     this.level = level;
     this.camera = camera;
     this.scene = scene;
     let controls = new PointerLockControls(camera, container);
     this.controls = controls;
+    this.shootCooldown = 0.6;
+
+    let shootSound = new Audio(listener);
+    const audioLoader = new AudioLoader();
+    audioLoader.load(shoot, function (buffer) {
+      shootSound.setBuffer(buffer);
+      shootSound.setLoop(false);
+      shootSound.setVolume(0.3);
+    });
+    this.shootSound = shootSound;
+
 
     this.huds = [hud2, hud1, hud];
     this.hudId = 2;
@@ -48,6 +61,7 @@ export default class Player {
   }
 
   update(delta) {
+    this.shootCooldown -= delta;
     this.velocity.x -= this.velocity.x * 7.0 * delta;
     this.velocity.z -= this.velocity.z * 7.0 * delta;
 
@@ -88,6 +102,9 @@ export default class Player {
   };
 
   onMouseDown() {
+    if (this.shootCooldown > 0) return;
+    this.shootCooldown = 0.6;
+    this.shootSound.play();
     this.gun_direction.set(0, 0, -1);
     this.gun_direction.unproject(this.camera);
     this.gun_ray.set(this.camera.position, this.gun_direction.sub(this.camera.position).normalize());
