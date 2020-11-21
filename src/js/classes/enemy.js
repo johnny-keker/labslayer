@@ -10,12 +10,14 @@ export default class Enemy {
     this.player = player;
     this.bullets = bullets;
     this.walls = walls;
+    this.hp = 10;
 
     var downCone = new Mesh(new ConeGeometry(10, 30), mat1);
     downCone.position.x = pX;
     downCone.position.z = pZ;
     downCone.position.y = -10;
     scene.add(downCone);
+    this.downCone = downCone;
 
     var sphere = new Mesh(new SphereGeometry(10, 10), mat2);
     sphere.position.x = pX;
@@ -33,6 +35,16 @@ export default class Enemy {
     upCone.position.z = pZ;
     upCone.position.y = 40;
     scene.add(upCone);
+    this.upCone = upCone;
+  }
+
+  onhit() {
+    this.hp--;
+    if (this.hp == 0) {
+      this.scene.remove(this.sphere);
+      this.scene.remove(this.upCone);
+      this.scene.remove(this.downCone);
+    }
   }
 
   shoot(playerPosition) {
@@ -54,7 +66,7 @@ export default class Enemy {
     if (minWallDis < playerDis) return;
 
 
-    var bullet = new Mesh(new SphereGeometry(8, 8), mat2);
+    var bullet = new Mesh(new SphereGeometry(8, 8), mat1);
     bullet.position.copy(this.sphere.position);
     bullet.lookAt(playerPosition);
     this.bullets.push({object: bullet, dis: minWallDis});

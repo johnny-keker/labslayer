@@ -43,20 +43,6 @@ function init() {
   canvas.onclick = function() {
     player.onclick();
   }
-  /*
-  document.addEventListener('mousedown', function(event) {
-    vector.set(0, 0, -1);
-    vector.unproject(camera.threeCamera);
-    gun_ray.set(camera.threeCamera.position, vector.sub(camera.threeCamera.position).normalize());
-    let intersections = gun_ray.intersectObjects(level.targets.planes);
-    if (intersections.length > 0) {
-      console.log('HIT');
-      level.targets.shoot(controls.getObject().position);
-    }
-    else
-      console.log('MISS');
-  });
-  */
 
   const uniforms = {
     uPhase: { value: 0.0 }

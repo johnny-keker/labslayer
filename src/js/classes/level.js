@@ -2,7 +2,6 @@ import Floor from './floor';
 import Lava from './lava';
 import Wall from './wall';
 import Roof from './roof';
-import Target from './target';
 import Enemy from './enemy';
 import { Vector3 } from 'three';
 
@@ -30,18 +29,12 @@ export default class Level {
     this.scene = scene;
     this.camera = camera;
     this.player = player;
-
-    
-    //this.targets = new Target(scene);
-    //this.targets.planes.forEach(e => {
-    //  scene.add(e);
-    //});
   }
 
   update(time) {
-    this.enemies.forEach(e => {e.update(time)});
+    this.enemies.forEach(e => { if(e.hp > 0) e.update(time)});
     if (this.bullets.length == 0) return;
-    for (let i = this.bullets.length - 1; i > 0; i--)
+    for (let i = this.bullets.length - 1; i >= 0; i--)
     {
       let b = this.bullets[i];
       let vec = new Vector3();

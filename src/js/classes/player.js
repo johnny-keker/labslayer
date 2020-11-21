@@ -39,6 +39,7 @@ export default class Player {
 
     document.addEventListener('keydown', this.onKeyDown, false);
     document.addEventListener('keyup', this.onKeyUp, false);
+    document.addEventListener('mousedown', (event) => this.onMouseDown(), false);
 
     this.velocity = new Vector3();
     this.direction = new Vector3();
@@ -84,6 +85,19 @@ export default class Player {
       this.controls.getObject().position.y = 10;
       canJump = true;
     }
+  };
+
+  onMouseDown() {
+    this.gun_direction.set(0, 0, -1);
+    this.gun_direction.unproject(this.camera);
+    this.gun_ray.set(this.camera.position, this.gun_direction.sub(this.camera.position).normalize());
+    for (let i = 0; i < this.level.enemies.length; i++) {
+      let enemy = this.level.enemies[i];
+      let intersection = this.gun_ray.intersectObjects([enemy.sphere, enemy.upCone, enemy.downCone]);
+      if (intersection.length > 0) {
+        enemy.onhit();
+      }
+    };
   };
 
   onclick() {
