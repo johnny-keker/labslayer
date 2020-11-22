@@ -3,12 +3,13 @@ import bossModel from "../../boss/tower.obj";
 import {Color, EquirectangularReflectionMapping, Mesh, MeshPhysicalMaterial, TextureLoader, MeshStandardMaterial, SphereGeometry, Raycaster,
   BoxGeometry} from "three";
 import bossColorTexture from "../../boss/color.png";
+import Ash from './shootParticles';
 
 let mat1 = new MeshStandardMaterial({color: 0xa5b5a9});
 const PI_20 = Math.PI / 20;
 
 export default class Boss {
-  constructor(scene, bullets, walls) {
+  constructor(scene, bullets, walls, particles) {
     const loader = new OBJLoader();
     this.object = null;
     this.timeout = 5;
@@ -21,6 +22,7 @@ export default class Boss {
     this.hitbox.position.set(0, 0, -605);
     this.hitbox.visible = false;
     this.killed = false;
+    this.particles = particles;
     scene.add(this.hitbox);
 
     loader.load(
@@ -76,6 +78,7 @@ export default class Boss {
     this.scene.remove(this.object);
     this.scene.remove(this.hitbox);
     this.killed = true;
+    this.particles.push(new Ash(this.scene, this.hitbox.position, 30, 400, 200));
   }
 
   update(delta) {

@@ -2,22 +2,22 @@ import {BufferGeometry, TextureLoader, Float32BufferAttribute, PointsMaterial, P
 import snowlake from '../../textures/snowflake.png'
 
 export default class Ash {
-  constructor(scene, basePosition) {  
+  constructor(scene, basePosition, lifespan = 2, s = 50, count = 30) {  
     const geometry = new BufferGeometry();
     const vertices = [];
     this.scene = scene;
-    this.lifespan = 2;
+    this.lifespan = lifespan;
 
 
     const textureLoader = new TextureLoader();
 
-    const sprite1 = textureLoader.load( snowlake );
+    const sprite1 = textureLoader.load(snowlake);
 
-    for ( let i = 0; i < 30; i ++ ) {
+    for ( let i = 0; i < count; i ++ ) {
 
-      const x = Math.random() * 50 - 25;
-      const y = Math.random() * 50 - 25;
-      const z = Math.random() * 50 - 25;
+      const x = Math.random() * s - (s / 2);
+      const y = Math.random() * s - (s / 2);
+      const z = Math.random() * s - (s / 2);
 
       vertices.push( x, y, z );
 

@@ -24,7 +24,7 @@ export default class Level {
     this.bullets = [];
     this.particles = [];
 
-    this.boss = new Boss(scene, this.bullets, this.walls.planes);
+    this.boss = new Boss(scene, this.bullets, this.walls.planes, this.particles);
     this.enemies = [
       new Enemy(this.bullets, camera, scene, -270, -335, this.walls.planes, this.boss, this.particles),
       new Enemy(this.bullets, camera, scene, 270, -335, this.walls.planes, this.boss, this.particles),
