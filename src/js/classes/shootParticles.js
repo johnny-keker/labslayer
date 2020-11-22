@@ -94,7 +94,8 @@ class Fire {
     vec.crossVectors(new Vector3(0, 1, 0), vec);
     this.particles.position.addScaledVector(vec, 1.5);
     //this.particles.lookAt(this.camera);
-    this.particles.position.y += this.camera.rotation.x;
+    this.particles.position.y += this.camera.getWorldDirection().y * 1.57;
+    
 
     //this.particles.rotation.set(0,0,0);
     this.scene.add(this.particles);
@@ -113,7 +114,7 @@ class Fire {
     vec.crossVectors(new Vector3(0, 1, 0), vec);
     this.particles.position.addScaledVector(vec, 1.5);
     //this.particles.lookAt(this.camera);
-    this.particles.position.y += this.camera.rotation.x;
+    this.particles.position.y += this.camera.getWorldDirection().y * 1.57;
   }
 }
 

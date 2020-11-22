@@ -65,7 +65,6 @@ export default class Player {
 
   update(delta) {
     this.shootCooldown -= delta;
-    this.fire.update(delta);
     this.velocity.x -= this.velocity.x * 7.0 * delta;
     this.velocity.z -= this.velocity.z * 7.0 * delta;
 
@@ -103,6 +102,8 @@ export default class Player {
       this.controls.getObject().position.y = 10;
       canJump = true;
     }
+    
+    this.fire.update(delta);
   };
 
   onMouseDown() {
