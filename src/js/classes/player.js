@@ -111,6 +111,7 @@ export default class Player {
     if (this.level.aliveEnemiesCount() != 0) {
     for (let i = 0; i < this.level.enemies.length; i++) {
         let enemy = this.level.enemies[i];
+        if (enemy.hp == 0) continue;
         let intersection = this.gun_ray.intersectObjects([enemy.sphere, enemy.upCone, enemy.downCone]);
         if (intersection.length > 0) {
           enemy.onhit();
