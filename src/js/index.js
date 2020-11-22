@@ -4,7 +4,9 @@ import {
   Scene,
   Vector3,
   Raycaster,
-  AudioListener
+  AudioListener,
+  AudioLoader,
+  Audio
 } from "three";
 
 import Camera from './classes/camera';
@@ -15,6 +17,8 @@ import Light from "./classes/light";
 
 import {WEBGL} from "three/examples/jsm/WebGL.js";
 import Player from "./classes/player";
+
+import music from "../sound/catastrophic_collision.ogg";
 
 if (WEBGL.isWebGLAvailable()) {
   init();
@@ -49,10 +53,24 @@ function init() {
     uPhase: { value: 0.0 }
   }
 
-  const listener = new AudioListener();
-  camera.threeCamera.add(listener);
+  const shootListener = new AudioListener();
+  const musicListener = new AudioListener();
+  camera.threeCamera.add(shootListener);
+  camera.threeCamera.add(musicListener);
 
-  let player = new Player(scene, camera.threeCamera, null, container, listener);
+  let musicSource = new Audio(musicListener);
+  const audioLoader = new AudioLoader();
+  audioLoader.load(music, function (buffer) {
+    musicSource.setBuffer(buffer);
+    musicSource.setLoop(true);
+    musicSource.setVolume(0.2);
+    musicSource.play();
+  },
+  function (xhr) {
+    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+  });
+
+  let player = new Player(scene, camera.threeCamera, null, container, shootListener);
   const level = new Level(scene, uniforms, camera.threeCamera, player);
   player.level = level;
 
