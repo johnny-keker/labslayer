@@ -4,6 +4,8 @@ import {
   Audio, AudioListener, AudioLoader
 } from "three";
 
+import {Fire} from './shootParticles';
+
 import { PointerLockControls } from "./controls";
 import hud from "../../hud/HUD_gun.png";
 import hud1 from "../../hud/HUD_gun_1.png";
@@ -25,6 +27,7 @@ export default class Player {
     let controls = new PointerLockControls(camera, container);
     this.controls = controls;
     this.shootCooldown = 0.6;
+    this.fire = new Fire(scene, camera);
 
     let shootSound = new Audio(listener);
     const audioLoader = new AudioLoader();
@@ -62,6 +65,7 @@ export default class Player {
 
   update(delta) {
     this.shootCooldown -= delta;
+    this.fire.update(delta);
     this.velocity.x -= this.velocity.x * 7.0 * delta;
     this.velocity.z -= this.velocity.z * 7.0 * delta;
 
@@ -105,6 +109,7 @@ export default class Player {
     if (this.shootCooldown > 0) return;
     this.shootCooldown = 0.6;
     this.shootSound.play();
+    this.fire.shoot();
     this.gun_direction.set(0, 0, -1);
     this.gun_direction.unproject(this.camera);
     this.gun_ray.set(this.camera.position, this.gun_direction.sub(this.camera.position).normalize());

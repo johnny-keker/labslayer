@@ -1,5 +1,5 @@
 import {Mesh, MeshStandardMaterial, ConeGeometry, SphereGeometry, Vector3, Raycaster, ArrowHelper} from "three";
-import Ash from './shootParticles'
+import {Ash} from './shootParticles'
 
 let mat1 = new MeshStandardMaterial({color: 0xa5b5a9});
 let mat2 = new MeshStandardMaterial({color: 0x1da33f});

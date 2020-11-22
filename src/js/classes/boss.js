@@ -3,7 +3,7 @@ import bossModel from "../../boss/tower.obj";
 import {Color, EquirectangularReflectionMapping, Mesh, MeshPhysicalMaterial, TextureLoader, MeshStandardMaterial, SphereGeometry, Raycaster,
   BoxGeometry} from "three";
 import bossColorTexture from "../../boss/color.png";
-import Ash from './shootParticles';
+import {Ash} from './shootParticles';
 
 let mat1 = new MeshStandardMaterial({color: 0xa5b5a9});
 const PI_20 = Math.PI / 20;
