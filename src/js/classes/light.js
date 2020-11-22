@@ -7,7 +7,7 @@ export default class Light {
         hemiLight.color.setHSL(0.6, 1, 0.6);
         hemiLight.groundColor.setHSL(0.095, 0.8, 0.5);
         hemiLight.position.set(0, 30, 0);
-        scene.add(hemiLight);
+        //scene.add(hemiLight);
 
 
         var dirLight = new DirectionalLight(0xffffff, 0.1);
@@ -31,7 +31,7 @@ export default class Light {
         //scene.add(dirLight.target);
 
         let spotLight = new SpotLight(0xffffff, 0.5, 150);
-        spotLight.power = 12;
+        spotLight.power = 6;
         spotLight.angle = 0.6;
         spotLight.decay = 1;
         spotLight.penumbra = 0.5;
@@ -55,18 +55,10 @@ export default class Light {
         pointLight.castShadow = true;
         scene.add(pointLight);
         this.pointLight = pointLight;
-
-        let pointLight2 = new PointLight(0x1da33f, 3);
-        pointLight2.distance = 500;
-        pointLight2.position.set(0, 30, -725);
-        pointLight2.castShadow = true;
-        scene.add(pointLight2);
-        this.pointLight2 = pointLight2;
     };
 
     updateSpotlight(time) {
         this.pointLight.intensity = 1 + 5 * Math.max(Math.sin(time / 700), 0);
-        this.pointLight2.intensity = 6 - this.pointLight.intensity;
         this.spotLight.position.copy(this.camera.position);
     }
 }

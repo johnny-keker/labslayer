@@ -1,6 +1,6 @@
-import {Mesh, MeshPhongMaterial, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, TextureLoader} from "three";
+import {Mesh, MeshPhongMaterial, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, TextureLoader, AdditiveBlending} from "three";
+import textureFile from '../../textures/Walls.png'
 
-let mat = new MeshStandardMaterial({color: 0x9c2913});
 let wallInfos = [
   { sX: 150, pX: 0, pZ: 10, r: Math.PI },  // w1
   { sX: 300, pX: -75, pZ: -140, r: Math.PI / 2 }, // w2
@@ -21,12 +21,22 @@ export default class Wall {
   constructor() {
     this.planes = [];
 
+    const textureLoader = new TextureLoader();
+
     wallInfos.forEach(wI => {
+      let texture = textureLoader.load(textureFile);
+      texture.wrapS = RepeatWrapping;
+      texture.wrapT = RepeatWrapping;
+      texture.repeat.set(wI.sX / 60, 1);
+
+      let mat = new MeshStandardMaterial({map: texture, metalness: 1.0});
+
       var plane = new Mesh(new PlaneGeometry(wI.sX, 70, 1, 1), mat);
       plane.rotation.y = wI.r;
       plane.position.x += wI.pX;
       plane.position.z += wI.pZ;
       plane.position.y = 17;
+      plane.receiveShadow = true;
       //plane.castShadow = true;
       this.planes.push(plane);
     });

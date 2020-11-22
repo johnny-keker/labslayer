@@ -1,8 +1,13 @@
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import bossModel from "../../boss/tower.obj";
 import {Color, EquirectangularReflectionMapping, Mesh, MeshPhysicalMaterial, TextureLoader, MeshStandardMaterial, SphereGeometry, Raycaster,
-  BoxGeometry} from "three";
+  BoxGeometry,
+  Vector3} from "three";
 import bossColorTexture from "../../boss/color.png";
+import bossEmissiveTexture from "../../boss/emissive.jpg"
+import bossMetalTexture from "../../boss/metall.png"
+import bossRoughTexture from "../../boss/metall.png"
+import bossNormalMap from "../../boss/metall.png"
 import {Ash} from './shootParticles';
 
 let mat1 = new MeshStandardMaterial({color: 0xa5b5a9});
@@ -36,6 +41,10 @@ export default class Boss {
 
           // object.children[c]
           let textureCube = textureLoader.load(bossColorTexture, function () {});
+          let eTextureCube = textureLoader.load(bossEmissiveTexture, function () {});
+          let mTextureCube = textureLoader.load(bossMetalTexture, function () {});
+          let rTextureCube = textureLoader.load(bossRoughTexture, function () {});
+          let nTextureCube = textureLoader.load(bossNormalMap, function () {});
           //
           // object.material.transparent = true;
           textureCube.mapping = EquirectangularReflectionMapping;
@@ -44,7 +53,8 @@ export default class Boss {
           object.traverse(function (child) {
 
               if (child instanceof Mesh) {
-                  child.material = new MeshPhysicalMaterial();
+                  child.material = new MeshStandardMaterial({emissiveMap: eTextureCube, emissive: 0x1da33f, emissiveIntensity : 1.0,
+                    metalnessMap: mTextureCube, metalness: 1.0, roughnessMap: rTextureCube, roughness: 1.0, normalMap: nTextureCube});
                   child.material.map = textureCube;
                   child.material.envMap = textureCube;
                   child.castShadow = true;
@@ -89,7 +99,9 @@ export default class Boss {
     bullet.position.set(0, 10, -605);
     bullet.rotation.y = this.current_rotation;
 
-    let ray = new Raycaster(bullet.position, bullet.getWorldDirection().normalize(), 0, 2000);
+    let vec = new Vector3();
+    bullet.getWorldDirection(vec);
+    let ray = new Raycaster(bullet.position, vec.normalize(), 0, 2000);
     let wIntersect = ray.intersectObjects(this.walls)[0];
     let minWallDis = 0;
     if (wIntersect === undefined)

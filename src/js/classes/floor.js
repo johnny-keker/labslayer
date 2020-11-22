@@ -1,4 +1,5 @@
 import {Mesh, MeshPhongMaterial, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, TextureLoader} from "three";
+import textureFile from '../../textures/floor.png'
 
 let mat = new MeshStandardMaterial({color: 0x9c2913});
 let planeInfos = [
@@ -20,7 +21,16 @@ export default class Floor {
   constructor() {
     this.planes = [];
 
+    const textureLoader = new TextureLoader();
+
     planeInfos.forEach(pI => {
+      let texture = textureLoader.load(textureFile);
+      texture.wrapS = RepeatWrapping;
+      texture.wrapT = RepeatWrapping;
+      texture.repeat.set(pI.sX / 30, pI.sY / 30);
+
+      let mat = new MeshStandardMaterial({map: texture});
+
       var plane = new Mesh(new PlaneGeometry(pI.sX, pI.sY, 1, 1), mat);
       plane.rotation.x = -Math.PI / 2;
       plane.position.y = -18.0;

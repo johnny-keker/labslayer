@@ -57,8 +57,8 @@ export default class Level {
       let vec = new Vector3();
       vec.setFromMatrixColumn(b.object.matrix, 0);
       vec.crossVectors(new Vector3(0, 1, 0), vec);
-      b.object.position.addScaledVector(vec, -2);
-      b.dis -= 2;
+      b.object.position.addScaledVector(vec, -3);
+      b.dis -= 3;
       let playerDistance = b.object.position.distanceTo(this.camera.position);
       if (playerDistance <= 10) {
         this.scene.remove(b.object);

@@ -1,8 +1,8 @@
-import {Mesh, MeshStandardMaterial, ConeGeometry, SphereGeometry, Vector3, Raycaster, ArrowHelper} from "three";
+import {Mesh, MeshStandardMaterial, ConeGeometry, SphereGeometry, Raycaster, TextureLoader, Vector3} from "three";
 import {Ash} from './shootParticles'
+import textureFile from '../../textures/test.png'
 
-let mat1 = new MeshStandardMaterial({color: 0xa5b5a9});
-let mat2 = new MeshStandardMaterial({color: 0x1da33f});
+let mat1 = new MeshStandardMaterial({color: 0x878c8f});
 
 export default class Enemy {
   constructor(bullets, player, scene, pX, pZ, walls, boss, particles) {
@@ -15,17 +15,25 @@ export default class Enemy {
     this.boss = boss;
     this.particles = particles;
 
+    const textureLoader = new TextureLoader();
+    let texture = textureLoader.load(textureFile);
+    let mat2 = new MeshStandardMaterial({color: 0x1da33f, map: texture});
+
     var downCone = new Mesh(new ConeGeometry(10, 30), mat1);
     downCone.position.x = pX;
     downCone.position.z = pZ;
     downCone.position.y = -10;
+    downCone.castShadow = true;
+    downCone.receiveShadow = true;
     scene.add(downCone);
     this.downCone = downCone;
 
-    var sphere = new Mesh(new SphereGeometry(10, 10), mat2);
+    var sphere = new Mesh(new SphereGeometry(10, 10, 100, 100), mat2);
     sphere.position.x = pX;
     sphere.position.z = pZ;
     sphere.position.y = 15;
+    sphere.castShadow = true;
+    sphere.receiveShadow = true;
     scene.add(sphere);
     this.sphere = sphere;
     //this.arrow = new ArrowHelper(new Vector3(0, 0, -1), this.sphere.position, 100, Math.random() * 0xffffff );
@@ -37,6 +45,8 @@ export default class Enemy {
     upCone.position.x = pX;
     upCone.position.z = pZ;
     upCone.position.y = 40;
+    upCone.castShadow = true;
+    upCone.receiveShadow = true;
     scene.add(upCone);
     this.upCone = upCone;
   }
@@ -53,7 +63,9 @@ export default class Enemy {
 
   shoot(playerPosition) {
     this.sphere.lookAt(playerPosition);
-    let ray = new Raycaster(this.sphere.position, this.sphere.getWorldDirection().normalize(), 0, 2000);
+    let vec = new Vector3();
+    this.sphere.getWorldDirection(vec);
+    let ray = new Raycaster(this.sphere.position, vec.normalize(), 0, 2000);
     let playerSphere = new Mesh(new SphereGeometry(1, 1), mat1);
     playerSphere.position.set(playerPosition.x, playerPosition.y, playerPosition.z);
     playerSphere.updateMatrixWorld();
@@ -82,9 +94,10 @@ export default class Enemy {
       minDis = minWallDis;
     else
       minDis = minBossDis;
-    var bullet = new Mesh(new SphereGeometry(8, 8), mat1);
+    var bullet = new Mesh(new SphereGeometry(6, 6), mat1);
     bullet.position.copy(this.sphere.position);
     bullet.lookAt(playerPosition);
+
     this.bullets.push({object: bullet, dis: minDis});
     this.scene.add(bullet);
   }

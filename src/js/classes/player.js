@@ -17,7 +17,6 @@ let moveForward = false;
 let moveLeft = false;
 let moveBackward = false;
 let moveRight = false;
-let canJump = true;
 
 export default class Player {
   constructor(scene, camera, level, container, listener) {
@@ -65,8 +64,8 @@ export default class Player {
 
   update(delta) {
     this.shootCooldown -= delta;
-    this.velocity.x -= this.velocity.x * 7.0 * delta;
-    this.velocity.z -= this.velocity.z * 7.0 * delta;
+    this.velocity.x -= this.velocity.x * 4.0 * delta;
+    this.velocity.z -= this.velocity.z * 4.0 * delta;
 
     this.velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 
@@ -94,14 +93,6 @@ export default class Player {
 
     
     this.controls.getObject().position.set(newPosition.x, newPosition.y, newPosition.z);
-
-    this.controls.getObject().position.y += (this.velocity.y * delta); // new behavior
-
-    if (this.controls.getObject().position.y < 10) {
-      this.velocity.y = 0;
-      this.controls.getObject().position.y = 10;
-      canJump = true;
-    }
     
     this.fire.update(delta);
   };
@@ -163,10 +154,6 @@ export default class Player {
       case 39: // right
       case 68: // d
         moveRight = true;
-        break;
-      case 32: // space
-        if (canJump === true) this.velocity.y += 200;
-        canJump = false;
         break;
     }
   };
