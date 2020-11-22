@@ -22,13 +22,14 @@ export default class Level {
       scene.add(e);
     });
     this.bullets = [];
+    this.particles = [];
 
     this.boss = new Boss(scene, this.bullets, this.walls.planes);
     this.enemies = [
-      new Enemy(this.bullets, camera, scene, -270, -335, this.walls.planes, this.boss),
-      new Enemy(this.bullets, camera, scene, 270, -335, this.walls.planes, this.boss),
-      new Enemy(this.bullets, camera, scene, 270, -875, this.walls.planes, this.boss),
-      new Enemy(this.bullets, camera, scene, -270, -875, this.walls.planes, this.boss),
+      new Enemy(this.bullets, camera, scene, -270, -335, this.walls.planes, this.boss, this.particles),
+      new Enemy(this.bullets, camera, scene, 270, -335, this.walls.planes, this.boss, this.particles),
+      new Enemy(this.bullets, camera, scene, 270, -875, this.walls.planes, this.boss, this.particles),
+      new Enemy(this.bullets, camera, scene, -270, -875, this.walls.planes, this.boss, this.particles),
     ];
 
     this.scene = scene;
@@ -42,6 +43,12 @@ export default class Level {
 
   update(time) {
     this.enemies.forEach(e => { if(e.hp > 0) e.update(time)});
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      if (!this.particles[i].update(time)) {
+        this.particles.splice(i, 1);
+        i--;
+      }
+    }
     this.boss.update(time);
     if (this.bullets.length == 0) return;
     for (let i = this.bullets.length - 1; i >= 0; i--)

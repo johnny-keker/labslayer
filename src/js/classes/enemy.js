@@ -1,10 +1,11 @@
 import {Mesh, MeshStandardMaterial, ConeGeometry, SphereGeometry, Vector3, Raycaster, ArrowHelper} from "three";
+import Ash from './shootParticles'
 
 let mat1 = new MeshStandardMaterial({color: 0xa5b5a9});
 let mat2 = new MeshStandardMaterial({color: 0x1da33f});
 
 export default class Enemy {
-  constructor(bullets, player, scene, pX, pZ, walls, boss) {
+  constructor(bullets, player, scene, pX, pZ, walls, boss, particles) {
     this.scene = scene;
     this.timer = 1.5;
     this.player = player;
@@ -12,6 +13,7 @@ export default class Enemy {
     this.walls = walls;
     this.hp = 10;
     this.boss = boss;
+    this.particles = particles;
 
     var downCone = new Mesh(new ConeGeometry(10, 30), mat1);
     downCone.position.x = pX;
@@ -40,6 +42,7 @@ export default class Enemy {
   }
 
   onhit() {
+    this.particles.push(new Ash(this.scene, this.sphere.position));
     this.hp--;
     if (this.hp == 0) {
       this.scene.remove(this.sphere);
